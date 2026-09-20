@@ -1,0 +1,2 @@
+lib/data/hooks.ts(46,22): error TS2749: 'mock.messagesByConversation' refers to a value, but is being used as a type here. Did you mean 'typeof mock.messagesByConversation'?
+lib/data/repository.ts(20,48): error TS2749: 'mock.messagesByConversation' refers to a value, but is being used as a type here. Did you mean 'typeof mock.messagesByConversation'?
