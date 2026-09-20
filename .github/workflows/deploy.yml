@@ -1,5 +1,4 @@
 name: Deploy to Chabokan
-
 on:
   push:
     branches: [main]
@@ -20,4 +19,4 @@ jobs:
           CHABOKAN_TOKEN: ${{ secrets.CHABOKAN_TOKEN }}
         run: |
           chabok login -t $CHABOKAN_TOKEN
-          chabok deploy -s nodejs-sm6tdl
+          chabok deploy -s nodejs-sm6tdl --path .
