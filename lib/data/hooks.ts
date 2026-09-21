@@ -1,57 +1,47 @@
 'use client'
 
-import useSWR from 'swr'
-import type * as mock from './mock'
+import * as mock from './mock'
 
-async function fetcher<T>(url: string): Promise<T> {
-  const res = await fetch(url)
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new Error(body.error ?? 'Request failed')
+// یک تابع کمکی برای شبیه‌سازی رفتار useSWR (بدون نیاز به API)
+function useMockResource<T>(data: T) {
+  return {
+    data,
+    error: undefined,
+    isLoading: false,
+    mutate: async () => {},
   }
-  const json = await res.json()
-  return json.data as T
 }
 
-function useResource<T>(resource: string | null) {
-  const { data, error, isLoading, mutate } = useSWR<T>(
-    resource ? `/api/${resource}` : null,
-    fetcher,
-    { revalidateOnFocus: false },
-  )
-  return { data, error: error as Error | undefined, isLoading, mutate }
-}
-
-export const useWorkspaces = () => useResource<typeof mock.workspaces>('workspaces')
-export const useMemberships = () => useResource<typeof mock.memberships>('memberships')
-export const useInstagramAccounts = () =>
-  useResource<typeof mock.instagramAccounts>('instagram-accounts')
-export const useContent = () => useResource<typeof mock.contentItems>('content')
-export const useMedia = () => useResource<typeof mock.mediaAssets>('media')
-export const useConversations = () => useResource<typeof mock.conversations>('conversations')
-export const useComments = () => useResource<typeof mock.comments>('comments')
-export const useLeads = () => useResource<typeof mock.leads>('leads')
-export const useCustomers = () => useResource<typeof mock.customers>('customers')
-export const useCategories = () => useResource<typeof mock.categories>('categories')
-export const useProducts = () => useResource<typeof mock.products>('products')
-export const useOrders = () => useResource<typeof mock.orders>('orders')
-export const useDiscounts = () => useResource<typeof mock.discounts>('discounts')
-export const useAgents = () => useResource<typeof mock.agents>('agents')
-export const useAgentActivity = () => useResource<typeof mock.agentActivity>('agent-activity')
-export const useNotifications = () => useResource<typeof mock.notifications>('notifications')
-export const useAuditLogs = () => useResource<typeof mock.auditLogs>('audit')
-export const useMetrics = () => useResource<typeof mock.dashboardMetrics>('metrics')
+export const useWorkspaces = () => useMockResource(mock.workspaces)
+export const useMemberships = () => useMockResource(mock.memberships)
+export const useInstagramAccounts = () => useMockResource(mock.instagramAccounts)
+export const useContent = () => useMockResource(mock.contentItems)
+export const useMedia = () => useMockResource(mock.mediaAssets)
+export const useConversations = () => useMockResource(mock.conversations)
+export const useComments = () => useMockResource(mock.comments)
+export const useLeads = () => useMockResource(mock.leads)
+export const useCustomers = () => useMockResource(mock.customers)
+export const useCategories = () => useMockResource(mock.categories)
+export const useProducts = () => useMockResource(mock.products)
+export const useOrders = () => useMockResource(mock.orders)
+export const useDiscounts = () => useMockResource(mock.discounts)
+export const useAgents = () => useMockResource(mock.agents)
+export const useAgentActivity = () => useMockResource(mock.agentActivity)
+export const useNotifications = () => useMockResource(mock.notifications)
+export const useAuditLogs = () => useMockResource(mock.auditLogs)
+export const useMetrics = () => useMockResource(mock.dashboardMetrics)
 
 export function useMessages(conversationId: string | null) {
-return useResource<typeof mock.messagesByConversation[string]>(
-    conversationId ? `messages?conversationId=${conversationId}` : null,
-  )
+  const data = conversationId ? mock.messagesByConversation[conversationId] || [] : []
+  return useMockResource(data)
 }
+
 export function useAnalytics() {
-  return useResource<{
-    followerGrowth: number[]
-    engagementByType: typeof mock.engagementByType
-    revenueByChannel: typeof mock.revenueByChannel
-    salesPipeline: typeof mock.salesPipeline
-  }>('analytics')
+  const data = (mock as any).analytics || {
+    followerGrowth: [],
+    engagementByType: mock.engagementByType,
+    revenueByChannel: mock.revenueByChannel,
+    salesPipeline: mock.salesPipeline,
+  }
+  return useMockResource(data)
 }
