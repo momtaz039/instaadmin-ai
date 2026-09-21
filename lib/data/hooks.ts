@@ -2,14 +2,8 @@
 
 import * as mock from './mock'
 
-// یک تابع کمکی برای شبیه‌سازی رفتار useSWR (بدون نیاز به API)
 function useMockResource<T>(data: T) {
-  return {
-    data,
-    error: undefined,
-    isLoading: false,
-    mutate: async () => {},
-  }
+  return { data, error: undefined, isLoading: false, mutate: async () => {} }
 }
 
 export const useWorkspaces = () => useMockResource(mock.workspaces)
@@ -37,11 +31,10 @@ export function useMessages(conversationId: string | null) {
 }
 
 export function useAnalytics() {
-  const data = (mock as any).analytics || {
+  return useMockResource({
     followerGrowth: [],
     engagementByType: mock.engagementByType,
     revenueByChannel: mock.revenueByChannel,
     salesPipeline: mock.salesPipeline,
-  }
-  return useMockResource(data)
+  })
 }
